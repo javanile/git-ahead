@@ -7,6 +7,11 @@ install:
 	@if command -v mush > /dev/null; then mush install --path .; install bin/git-ahead ~/.local/bin/your_file; fi
 	@echo "git-ahead was installed into ~/.local/bin, please make sure it's in your PATH."
 
+release: build
+	@git add .
+	@git commit -m "Release"
+	@git push
+
 test-sort:
 	@bash tests/sort-test.sh
 

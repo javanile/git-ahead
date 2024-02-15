@@ -4,3 +4,6 @@ build:
 
 install:
 	@mush install --path .
+
+test-sort:
+	@bash tests/sort-test.sh

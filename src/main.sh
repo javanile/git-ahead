@@ -25,6 +25,30 @@ git_ahead_sort() {
   sort -k3rn,3 -k2n,2
 }
 
+git_ahead_format() {
+  local branch
+  local ahead_rev_list
+  local behind_rev_list
+  local formatted_branch
+  local formatted_behind_rev_list
+  local width
+
+  width=${1:-30}
+
+  while read -r branch behind_rev_list ahead_rev_list; do
+    formatted_branch=$(printf "%-${width}s" "$branch")
+    formatted_behind_rev_list=$(printf "%3s" "$behind_rev_list")
+
+    echo "${formatted_branch} ${formatted_behind_rev_list} | ${ahead_rev_list}"
+  done
+}
+
 main() {
-  git_ahead_list | git_ahead_sort
+  local list
+  local width
+
+  list="$(git_ahead_list)"
+  width=$(echo "${list}" | wc -L)
+
+  echo "${list}" | git_ahead_sort | git_ahead_format "${width}"
 }

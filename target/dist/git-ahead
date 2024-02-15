@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+## BP010: Release metadata
+## @build_type: bin
+## @build_date: 2024-02-15T08:51:13Z
+set -e
+extern() {
+  extern=$1
+}
+legacy() {
+  legacy=$1
+}
+module() {
+  module=$1
+}
+public() {
+  public=$1
+}
+use() {
+  use=$1
+}
+embed() {
+  embed=$1
+}
+## BP004: Compile the entrypoint
+
+main() {
+  local branch
+  local current_branch
+  local ahead_rev_list
+  local behind_rev_list
+  local formatted_branch
+  local formatted_ahead_rev_list
+
+  git fetch --all --quiet
+
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+  git for-each-ref --format='%(refname:short)' refs/heads | while read -r branch; do
+    if [ "${branch}" != "${current_branch}" ]; then
+      ahead_rev_list=$(git rev-list --count "${current_branch}".."${branch}")
+      if [ "${ahead_rev_list}" -gt "0" ]; then
+        behind_rev_list=$(git rev-list --count "${branch}".."${current_branch}")
+        formatted_branch=$(printf "%-30s" "${branch}")
+        formatted_ahead_rev_list=$(printf "%3s" "${ahead_rev_list}")
+
+        echo "${formatted_branch} ${formatted_ahead_rev_list} | ${behind_rev_list}"
+      fi
+    fi
+  done
+}
+## BP005: Execute the entrypoint
+main "$@"

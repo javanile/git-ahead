@@ -2,7 +2,7 @@
 build:
 	@mush build --release
 
-install:
+install: build
 	@chmod +x bin/git-ahead
 	@if command -v mush > /dev/null; then mush install --path .; install bin/git-ahead ~/.local/bin/your_file; fi
 	@echo "git-ahead was installed into ~/.local/bin, please make sure it's in your PATH."

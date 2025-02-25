@@ -4,12 +4,12 @@ build:
 
 install: build
 	@chmod +x bin/git-ahead
-	@if command -v mush > /dev/null; then mush install --path .; install bin/git-ahead ~/.local/bin/your_file; fi
+	@if command -v mush > /dev/null; then mush install --path .; install bin/git-ahead ~/.local/bin/git-ahead; fi
 	@echo "git-ahead was installed into ~/.local/bin, please make sure it's in your PATH."
 
 release: build
 	@git add .
-	@git commit -m "Release"
+	@git commit -m "Release" || true
 	@git push
 
 test-sort:
@@ -17,3 +17,6 @@ test-sort:
 
 test-format:
 	@bash tests/format-test.sh
+
+test-list:
+	@bash tests/list-test.sh

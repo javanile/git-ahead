@@ -4,16 +4,23 @@ git_ahead_list() {
   local current_branch
   local ahead_rev_list
   local behind_rev_list
+  local branch_list
 
   git fetch --all --quiet
 
   current_branch=$(git rev-parse --abbrev-ref HEAD)
 
-  git for-each-ref --format='%(refname:short)' refs/heads | while read -r branch; do
+  # Retrieve the list of local branches
+  # branch_list=$(git for-each-ref --format='%(refname:short)' refs/heads)
+
+  # Retrieve the list of remote branches
+  branch_list=$(git ls-remote --heads origin | awk '{sub("refs/heads/", "", $2); print $2}')
+
+  echo "${branch_list}" | while read -r branch; do
     if [ "${branch}" != "${current_branch}" ]; then
-      ahead_rev_list=$(git rev-list --count "${current_branch}".."${branch}")
+      ahead_rev_list=$(git rev-list --count "${current_branch}".."origin/${branch}")
       if [ "${ahead_rev_list}" -gt "0" ]; then
-        behind_rev_list=$(git rev-list --count "${branch}".."${current_branch}")
+        behind_rev_list=$(git rev-list --count "origin/${branch}".."${current_branch}")
 
         echo "${branch} ${behind_rev_list} ${ahead_rev_list}"
       fi
@@ -46,6 +53,14 @@ git_ahead_format() {
 main() {
   local list
   local width
+  local has_remote
+
+  has_remote=$(git ls-remote --heads origin | grep "$(git rev-parse --abbrev-ref HEAD)$" || true)
+
+  if [ -z "${has_remote}" ]; then
+    echo "No remote branch found for: $(git rev-parse --abbrev-ref HEAD)"
+    exit 1
+  fi
 
   list="$(git_ahead_list)"
   width=$(echo "${list}" | wc -L)

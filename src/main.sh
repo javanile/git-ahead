@@ -5,7 +5,7 @@ usage() {
   echo "Usage: git ahead [OPTIONS]" >&2
   echo "" >&2
   echo "Available options" >&2
-  echo "  --held       Display this help message" >&2
+  echo "  --help       Display this help message" >&2
 }
 
 main() {

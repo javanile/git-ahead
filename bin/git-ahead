@@ -3,7 +3,7 @@
 # @package: git-ahead
 # @build_type: bin
 # @build_with: Mush 0.2.0 (2025-02-01 develop)
-# @build_date: 2025-02-25T10:30:37Z
+# @build_date: 2025-02-25T10:32:07Z
 set -e
 use() { return 0; }
 extern() { return 0; }
@@ -19,7 +19,7 @@ usage() {
   echo "Usage: git ahead [OPTIONS]" >&2
   echo "" >&2
   echo "Available options" >&2
-  echo "  --held       Display this help message" >&2
+  echo "  --help       Display this help message" >&2
 }
 
 main() {

@@ -71,6 +71,12 @@ main() {
   fi
 
   list="$(git_ahead_list "${current_branch}")"
+
+  if ! echo "$list" | grep -q '[^[:space:]]'; then
+    echo "info: The current branch '${current_branch}' is up to date with no missing updates." >&2
+    exit 1
+  fi
+
   width=$(echo "${list}" | wc -L)
 
   echo "${list}" | git_ahead_sort | git_ahead_format "${width}"

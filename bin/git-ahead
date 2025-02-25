@@ -3,7 +3,7 @@
 # @package: git-ahead
 # @build_type: bin
 # @build_with: Mush 0.2.0 (2025-02-01 develop)
-# @build_date: 2025-02-25T10:01:29Z
+# @build_date: 2025-02-25T10:21:41Z
 set -e
 use() { return 0; }
 extern() { return 0; }
@@ -85,6 +85,12 @@ main() {
   fi
 
   list="$(git_ahead_list "${current_branch}")"
+
+  if ! echo "$list" | grep -q '[^[:space:]]'; then
+    echo "info: The current branch '${current_branch}' is up to date with no missing updates." >&2
+    exit 1
+  fi
+
   width=$(echo "${list}" | wc -L)
 
   echo "${list}" | git_ahead_sort | git_ahead_format "${width}"

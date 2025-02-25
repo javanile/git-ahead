@@ -1,4 +1,13 @@
 
+usage() {
+  echo "Git-Ahead is a tool that identifies branches with commits ahead of the current branch" >&2
+  echo "" >&2
+  echo "Usage: git ahead [OPTIONS]" >&2
+  echo "" >&2
+  echo "Available options" >&2
+  echo "  --held       Display this help message" >&2
+}
+
 git_ahead_list() {
   local branch
   local current_branch
@@ -55,6 +64,11 @@ main() {
   local width
   local has_remote
   local current_branch
+
+  if [ "$1" = "--help" ]; then
+    usage
+    exit 0
+  fi
 
   current_branch=$(git rev-parse --abbrev-ref HEAD)
   has_remote=$(git ls-remote --heads origin | grep "${current_branch}$" || true)

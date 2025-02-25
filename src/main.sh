@@ -54,11 +54,19 @@ main() {
   local list
   local width
   local has_remote
+  local current_branch
 
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
   has_remote=$(git ls-remote --heads origin | grep "$(git rev-parse --abbrev-ref HEAD)$" || true)
 
   if [ -z "${has_remote}" ]; then
-    echo "No remote branch found for: $(git rev-parse --abbrev-ref HEAD)"
+    echo "error: The current branch '${current_branch}' has no upstream branch." >&2
+    echo "To push the current branch and set the remote as upstream, use" >&2
+    echo ""
+    echo "    git push --set-upstream origin ${current_branch}" >&2
+    echo ""
+    echo "To have this happen automatically for branches without a tracking"
+    echo "upstream, see 'push.autoSetupRemote' in 'git help config'."
     exit 1
   fi
 

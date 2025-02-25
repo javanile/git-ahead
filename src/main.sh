@@ -8,6 +8,43 @@ usage() {
   echo "  --held       Display this help message" >&2
 }
 
+main() {
+  local list
+  local width
+  local has_remote
+  local current_branch
+
+  if [ "$1" = "--help" ]; then
+    usage
+    exit 0
+  fi
+
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  has_remote=$(git ls-remote --heads origin | grep "${current_branch}$" || true)
+
+  if [ -z "${has_remote}" ]; then
+    echo "error: The current branch '${current_branch}' has no upstream branch." >&2
+    echo "To push the current branch and set the remote as upstream, use" >&2
+    echo "" >&2
+    echo "    git push --set-upstream origin ${current_branch}" >&2
+    echo "" >&2
+    echo "To have this happen automatically for branches without a tracking" >&2
+    echo "upstream, see 'push.autoSetupRemote' in 'git help config'." >&2
+    exit 1
+  fi
+
+  list="$(git_ahead_list "${current_branch}")"
+
+  if ! echo "$list" | grep -q '[^[:space:]]'; then
+    echo "info: The current branch '${current_branch}' is up to date with no missing updates." >&2
+    exit 1
+  fi
+
+  width=$(echo "${list}" | wc -L)
+
+  echo "${list}" | git_ahead_sort | git_ahead_format "${width}"
+}
+
 git_ahead_list() {
   local branch
   local current_branch
@@ -57,41 +94,4 @@ git_ahead_format() {
 
     echo "${formatted_branch} ${formatted_behind_rev_list} | ${ahead_rev_list}"
   done
-}
-
-main() {
-  local list
-  local width
-  local has_remote
-  local current_branch
-
-  if [ "$1" = "--help" ]; then
-    usage
-    exit 0
-  fi
-
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
-  has_remote=$(git ls-remote --heads origin | grep "${current_branch}$" || true)
-
-  if [ -z "${has_remote}" ]; then
-    echo "error: The current branch '${current_branch}' has no upstream branch." >&2
-    echo "To push the current branch and set the remote as upstream, use" >&2
-    echo "" >&2
-    echo "    git push --set-upstream origin ${current_branch}" >&2
-    echo "" >&2
-    echo "To have this happen automatically for branches without a tracking" >&2
-    echo "upstream, see 'push.autoSetupRemote' in 'git help config'." >&2
-    exit 1
-  fi
-
-  list="$(git_ahead_list "${current_branch}")"
-
-  if ! echo "$list" | grep -q '[^[:space:]]'; then
-    echo "info: The current branch '${current_branch}' is up to date with no missing updates." >&2
-    exit 1
-  fi
-
-  width=$(echo "${list}" | wc -L)
-
-  echo "${list}" | git_ahead_sort | git_ahead_format "${width}"
 }

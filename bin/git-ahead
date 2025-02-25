@@ -3,7 +3,7 @@
 # @package: git-ahead
 # @build_type: bin
 # @build_with: Mush 0.2.0 (2025-02-01 develop)
-# @build_date: 2025-02-25T09:58:36Z
+# @build_date: 2025-02-25T10:01:29Z
 set -e
 use() { return 0; }
 extern() { return 0; }
@@ -22,7 +22,7 @@ git_ahead_list() {
 
   git fetch --all --quiet
 
-  current_branch=$(git rev-parse --abbrev-ref HEAD)
+  current_branch="$1"
 
   # Retrieve the list of local branches
   # branch_list=$(git for-each-ref --format='%(refname:short)' refs/heads)
@@ -71,20 +71,20 @@ main() {
   local current_branch
 
   current_branch=$(git rev-parse --abbrev-ref HEAD)
-  has_remote=$(git ls-remote --heads origin | grep "$(git rev-parse --abbrev-ref HEAD)$" || true)
+  has_remote=$(git ls-remote --heads origin | grep "${current_branch}$" || true)
 
   if [ -z "${has_remote}" ]; then
     echo "error: The current branch '${current_branch}' has no upstream branch." >&2
     echo "To push the current branch and set the remote as upstream, use" >&2
-    echo ""
+    echo "" >&2
     echo "    git push --set-upstream origin ${current_branch}" >&2
-    echo ""
-    echo "To have this happen automatically for branches without a tracking"
-    echo "upstream, see 'push.autoSetupRemote' in 'git help config'."
+    echo "" >&2
+    echo "To have this happen automatically for branches without a tracking" >&2
+    echo "upstream, see 'push.autoSetupRemote' in 'git help config'." >&2
     exit 1
   fi
 
-  list="$(git_ahead_list)"
+  list="$(git_ahead_list "${current_branch}")"
   width=$(echo "${list}" | wc -L)
 
   echo "${list}" | git_ahead_sort | git_ahead_format "${width}"

@@ -3,7 +3,7 @@
 # @package: git-ahead
 # @build_type: bin
 # @build_with: Mush 0.2.0 (2025-02-01 develop)
-# @build_date: 2025-02-25T10:30:26Z
+# @build_date: 2025-02-25T10:30:32Z
 set -e
 use() { return 0; }
 extern() { return 0; }

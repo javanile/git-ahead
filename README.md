@@ -1,5 +1,7 @@
 # Git-Ahead 🚀
 
+[![Shellcheck](https://github.com/javanile/git-ahead/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/javanile/git-ahead/actions/workflows/shellcheck.yml)
+
 Git-Ahead is a tool that identifies branches 🌿 with commits ahead of the current branch, providing a useful indication of technical debt to manage in a Git repository.
 
 ## Installation 🛠️

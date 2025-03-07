@@ -64,9 +64,9 @@ git_ahead_list() {
 
   echo "${branch_list}" | while read -r branch; do
     if [ "${branch}" != "${current_branch}" ]; then
-      ahead_rev_list=$(git rev-list --count "${current_branch}".."origin/${branch}")
+      ahead_rev_list=$(git rev-list --count "${current_branch}..origin/${branch}")
       if [ "${ahead_rev_list}" -gt "0" ]; then
-        behind_rev_list=$(git rev-list --count "origin/${branch}".."${current_branch}")
+        behind_rev_list=$(git rev-list --count "origin/${branch}..${current_branch}")
 
         echo "${branch} ${behind_rev_list} ${ahead_rev_list}"
       fi
